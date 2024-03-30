@@ -1,0 +1,42 @@
+<apex:page standardController="Account" extensions="AccountContactsController">
+    <apex:form>
+        <!-- Account Details Section -->
+        <apex:pageBlock title="Account Details">
+            <apex:pageBlockButtons>
+                <apex:commandButton value="Save" action="{!save}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+                <apex:inputField value="{!Account.Name}"/>
+                <apex:inputField value="{!Account.AccountNumber}"/>
+                <apex:inputField value="{!Account.Type}"/>
+                <apex:inputField value="{!Account.Active__c}"/>
+                <apex:inputField value="{!Account.Phone}"/>
+                <apex:inputField value="{!Account.Fax}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <!-- Related Contacts List -->
+        <apex:pageBlock title="Related Contacts">
+            <apex:pageBlockTable value="{!contacts}" var="contact">
+                <apex:column value="{!contact.Name}" headerValue="Name"/>
+                <apex:column value="{!contact.Title}" headerValue="Title"/>
+                <apex:column value="{!contact.Phone}" headerValue="Phone"/>
+                <apex:column value="{!contact.Is_Primary_Contact__c}" headerValue="Is Primary Contact"/>
+                <apex:column headerValue="Actions">
+                    <apex:outputLink rendered="{!contact.Is_Primary_Contact__c == false}" 
+                                     onclick="if (!confirm('Set this contact as primary?')) return false;
+                                     actionFunctionHere('{!contact.Id}'); return false;">
+                        Set as Primary
+                    </apex:outputLink>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        
+        <!-- Action Function inside the form -->
+        <apex:actionFunction name="actionFunctionHere" action="{!setPrimaryContact}" reRender="msgs">
+            <apex:param name="contactIdParam" value="" assignTo="{!selectedContactId}"/>
+        </apex:actionFunction>
+        <apex:pageMessages id="msgs"/>
+    </apex:form>
+</apex:page>
